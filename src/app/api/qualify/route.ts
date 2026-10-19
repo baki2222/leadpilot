@@ -70,6 +70,7 @@ Given an inbound message:
 export async function POST(req: Request) {
   const { text, icp: rawIcp } = (await req.json().catch(() => ({}))) as { text?: string; icp?: Partial<ICP> };
   if (!text?.trim()) return NextResponse.json({ error: "Lead text is required" }, { status: 400 });
+  if (text.length > 6000) return NextResponse.json({ error: "Message is too long (max 6,000 characters)" }, { status: 413 });
   const icp: ICP = { ...DEFAULT_ICP, ...rawIcp };
 
   if (process.env.ANTHROPIC_API_KEY) {
